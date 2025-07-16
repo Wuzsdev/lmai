@@ -1,0 +1,2486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>灵萌AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            user-select: auto;
+        }
+
+        body {
+            background-color: #1a1a2e;
+            color: #e2e2e2;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.6s ease, color 0.6s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%);
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            position: relative;
+            gap: 10px;
+            flex-shrink: 0;
+            transition: background 0.6s ease, box-shadow 0.6s ease;
+        }
+
+        body.light-mode .header {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-title {
+            font-size: clamp(16px, 4vw, 20px);
+            font-weight: 700;
+            color: #ff79c6;
+            white-space: nowrap;
+            text-shadow: 0 0 10px rgba(255, 121, 198, 0.3);
+            animation: glow 2s infinite alternate;
+            flex-shrink: 0;
+            transition: color 0.6s ease, text-shadow 0.6s ease;
+        }
+
+        body.light-mode .app-title {
+            color: #d68bff;
+            text-shadow: 0 0 5px rgba(214, 139, 255, 0.3);
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px rgba(255, 121, 198, 0.3);
+            }
+            to {
+                text-shadow: 0 0 15px rgba(255, 121, 198, 0.6);
+            }
+        }
+
+        body.light-mode .app-title {
+            animation: glow-light 2s infinite alternate;
+        }
+
+        @keyframes glow-light {
+            from {
+                text-shadow: 0 0 3px rgba(214, 139, 255, 0.3);
+            }
+            to {
+                text-shadow: 0 0 10px rgba(214, 139, 255, 0.6);
+            }
+        }
+
+
+        .search-container {
+            background-color: #2a2a4a;
+            border-radius: 25px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            flex: 1;
+            transition: all 0.3s ease;
+            border: 1px solid #444;
+            min-width: 0;
+            cursor: pointer;
+        }
+
+        body.light-mode .search-container {
+            background-color: #e0e0e0;
+            border-color: #ccc;
+        }
+
+        .search-container:hover {
+            border-color: #bd93f9;
+             box-shadow: 0 0 8px rgba(189, 147, 249, 0.3);
+        }
+
+        body.light-mode .search-container:hover {
+            border-color: #d68bff;
+             box-shadow: 0 0 8px rgba(214, 139, 255, 0.3);
+        }
+
+        .search-container:focus-within {
+            box-shadow: 0 0 10px rgba(255, 121, 198, 0.3);
+            border-color: #ff79c6;
+        }
+
+         body.light-mode .search-container:focus-within {
+            box-shadow: 0 0 10px rgba(214, 139, 255, 0.3);
+            border-color: #d68bff;
+        }
+
+        .search-container input {
+            background: transparent;
+            border: none;
+            color: white;
+            flex: 1;
+            padding: 3px 5px;
+            outline: none;
+            font-size: clamp(12px, 3vw, 14px);
+            min-width: 50px;
+             transition: color 0.6s ease;
+        }
+
+        body.light-mode .search-container input {
+            color: #333;
+        }
+
+        .search-container input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+             transition: color 0.6s ease;
+        }
+
+         body.light-mode .search-container input::placeholder {
+            color: rgba(51, 51, 51, 0.7);
+        }
+
+
+        .search-icon {
+            margin-right: 8px;
+            color: #bd93f9;
+            font-size: clamp(14px, 3vw, 16px);
+            transition: color 0.6s ease;
+        }
+
+         body.light-mode .search-icon {
+            color: #d68bff;
+         }
+
+        .profile-icon, .back-button, .history-clear-button {
+            color: #bd93f9;
+            font-size: clamp(18px, 5vw, 22px);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+             transition: color 0.6s ease;
+        }
+
+         body.light-mode .profile-icon, body.light-mode .back-button, body.light-mode .history-clear-button {
+            color: #d68bff;
+         }
+
+        .profile-icon:hover, .back-button:hover, .history-clear-button:hover {
+             background: rgba(214, 139, 255, 0.15);
+             transform: scale(1.1);
+        }
+         body.light-mode .profile-icon:hover, body.light-mode .back-button:hover, body.light-mode .history-clear-button:hover {
+             background: rgba(189, 147, 249, 0.15);
+         }
+
+
+        .categories-container {
+            position: relative;
+            padding: 8px 15px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #2d2d50 0%, #1f1f35 100%);
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: background 0.6s ease, box-shadow 0.6s ease;
+        }
+
+         body.light-mode .categories-container {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+         }
+
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            padding: 3px 0;
+            gap: 10px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            padding-bottom: 8px;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category {
+            background: linear-gradient(135deg, #3a3a5a 0%, #2a2a4a 100%);
+            border-radius: 20px;
+            padding: 7px 16px;
+            white-space: nowrap;
+            font-size: clamp(12px, 3vw, 14px);
+            color: #f8f8f2;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            border: 1px solid #4a4a6a;
+            flex-shrink: 0;
+            user-select: none;
+             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.6s ease, background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+        }
+
+         body.light-mode .category {
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            color: #333;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            border-color: #ccc;
+         }
+
+        .category:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border-color: #bd93f9;
+        }
+
+         body.light-mode .category:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+             border-color: #d68bff;
+         }
+
+
+        .category.active {
+            background: linear-gradient(135deg, #d68bff 0%, #ff79c6 100%);
+            color: white;
+            font-weight: 500;
+            border-color: #ff79c6;
+            box-shadow: 0 3px 8px rgba(255, 121, 198, 0.4);
+            transform: translateY(-1px);
+        }
+
+        body.light-mode .category.active {
+            background: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
+            color: white;
+            border-color: #bd93f9;
+            box-shadow: 0 3px 8px rgba(189, 147, 249, 0.4);
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding-bottom: 5px;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @media (min-width: 768px) {
+            .ai-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ai-card {
+            background: linear-gradient(135deg, #3a3a5a 0%, #2a2a4a 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid #4a4a6a;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 220px;
+        }
+
+         body.light-mode .ai-card {
+             background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+             border-color: #ccc;
+         }
+
+        .ai-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+            border-color: #d68bff;
+        }
+
+        body.light-mode .ai-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+            border-color: #bd93f9;
+        }
+
+        .ai-card-inner {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ai-image {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        .ai-info {
+            padding: 10px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+            color: #e2e2e2;
+            transition: color 0.6s ease;
+            margin-top: 80px;
+            height: calc(100% - 80px);
+            justify-content: flex-end;
+             overflow: hidden;
+             background: linear-gradient(to bottom, rgba(42, 42, 74, 0) 0%, rgba(42, 42, 74, 0.5) 50%, rgba(42, 42, 74, 0.9) 80%, rgba(42, 42, 74, 1) 100%);
+        }
+
+        body.light-mode .ai-info {
+             background: linear-gradient(to bottom, rgba(240, 240, 240, 0) 0%, rgba(240, 240, 240, 0.5) 50%, rgba(240, 240, 240, 0.9) 80%, rgba(240, 240, 240, 1) 100%);
+             color: #333;
+        }
+
+
+        .ai-name {
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #f8f8f2;
+            font-size: clamp(13px, 3.3vw, 15px);
+             word-break: break-word;
+             white-space: normal;
+             overflow-wrap: break-word;
+             transition: color 0.6s ease;
+        }
+
+        body.light-mode .ai-name {
+            color: #333;
+        }
+
+        .ai-desc {
+            font-size: clamp(10px, 2.5vw, 12px);
+            color: #c2c2d8;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+            min-height: 7em;
+            transition: color 0.6s ease;
+            word-break: break-word;
+             white-space: normal;
+             overflow-wrap: break-word;
+        }
+
+        body.light-mode .ai-desc {
+            color: #555;
+        }
+
+        .ai-tags {
+             display: none;
+        }
+
+        .page {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+             opacity: 0;
+             pointer-events: none;
+             z-index: 1;
+        }
+
+        .page.active {
+            display: flex;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0%);
+            z-index: 2;
+        }
+         #home-page.active {
+            transform: translateX(0%);
+            opacity: 1;
+            z-index: 2;
+         }
+
+
+         .page.active.from-left {
+             transform: translateX(0%);
+             opacity: 1;
+         }
+
+         .page.active:not(.from-left) {
+              transform: translateX(0%);
+              opacity: 1;
+         }
+
+        .page:not(.active) {
+             pointer-events: none;
+             opacity: 0;
+             transform: translateX(100%);
+        }
+
+         .page.from-left:not(.active) {
+              transform: translateX(-100%);
+         }
+
+
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 15px;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: clamp(80px, 20vw, 100px);
+            height: clamp(80px, 20vw, 100px);
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d68bff 0%, #ff79c6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: clamp(30px, 10vw, 40px);
+            box-shadow: 0 5px 15px rgba(214, 139, 255, 0.4);
+            border: 3px solid #f8f8f2;
+            flex-shrink: 0;
+             transition: all 0.6s ease;
+             cursor: pointer;
+        }
+         body.light-mode .avatar {
+             background: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
+             box-shadow: 0 5px 15px rgba(189, 147, 249, 0.4);
+             border-color: #333;
+         }
+
+
+        .username {
+            font-size: clamp(18px, 4vw, 22px);
+            color: #f8f8f2;
+            font-weight: 500;
+            transition: color 0.6s ease;
+        }
+
+         body.light-mode .username {
+            color: #333;
+         }
+
+
+        .profile-item {
+            width: 100%;
+            max-width: 400px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, #3a3a5a 0%, #2a2a4a 100%);
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid #4a4a6a;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+         body.light-mode .profile-item {
+             background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+             border-color: #ccc;
+             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+         }
+
+
+        .profile-item:hover {
+            transform: translateX(5px);
+            border-color: #d68bff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode .profile-item:hover {
+             transform: translateX(5px);
+             border-color: #bd93f9;
+             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .profile-item span:first-child {
+            font-size: clamp(14px, 3vw, 16px);
+            color: #c2c2d8;
+             transition: color 0.6s ease;
+        }
+
+         body.light-mode .profile-item span:first-child {
+            color: #555;
+         }
+
+         .profile-item span:last-child {
+            font-size: clamp(15px, 3.5vw, 18px);
+            color: #bd93f9;
+             transition: color 0.6s ease;
+         }
+
+         body.light-mode .profile-item span:last-child {
+            color: #d68bff;
+         }
+
+
+        .profile-header-title, .history-title, .settings-title, .edit-profile-title {
+            flex: 1;
+            text-align: center;
+            font-size: clamp(16px, 4vw, 20px);
+            font-weight: 500;
+            color: #f8f8f2;
+            transition: color 0.6s ease;
+        }
+
+         body.light-mode .profile-header-title, body.light-mode .history-title, body.light-mode .settings-title, body.light-mode .edit-profile-title {
+            color: #333;
+         }
+         .history-title, .settings-title, .edit-profile-title {
+             color: #ff79c6;
+         }
+          body.light-mode .history-title, body.light-mode .settings-title, body.light-mode .edit-profile-title {
+              color: #bd93f9;
+          }
+
+        .category-content {
+            display: none;
+            animation: fadeInContent 0.5s ease-out;
+        }
+
+        .category-content.active {
+            display: block;
+        }
+
+         @keyframes fadeInContent {
+             from {
+                 opacity: 0;
+             }
+             to {
+                 opacity: 1;
+             }
+         }
+
+        .search-page, .history-page, .settings-page, .edit-profile-page, .more-functions-page {
+             display: none;
+             flex-direction: column;
+             min-height: 100vh;
+             width: 100%;
+             position: absolute;
+             top: 0;
+             left: 0;
+             transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+              opacity: 0;
+              pointer-events: none;
+              z-index: 1;
+        }
+
+        .search-page.active, .history-page.active, .settings-page.active, .edit-profile-page.active, .more-functions-page.active {
+            display: flex;
+            opacity: 1;
+            pointer-events: auto;
+             transform: translateX(0%);
+             z-index: 2;
+        }
+
+         .search-page.active.from-left, .history-page.active.from-left, .settings-page.active.from-left, .edit-profile-page.active.from-left, .more-functions-page.active.from-left {
+             transform: translateX(0%);
+             opacity: 1;
+         }
+
+         .search-page:not(.active), .history-page:not(.active), .settings-page:not(.active), .edit-profile-page:not(.active), .more-functions-page:not(.active) {
+             pointer-events: none;
+             opacity: 0;
+             transform: translateX(100%);
+         }
+
+          .search-page.from-left:not(.active), .history-page.from-left:not(.active), .settings-page.from-left:not(.active), .edit-profile-page.from-left:not(.active), .more-functions-page.from-left:not(.active) {
+               transform: translateX(-100%);
+          }
+
+
+        .search-header, .history-header, .settings-header, .edit-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%);
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+             transition: background 0.6s ease, box-shadow 0.6s ease;
+        }
+         body.light-mode .search-header, body.light-mode .history-header, body.light-mode .settings-header, body.light-mode .edit-profile-header {
+             background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+         }
+
+
+        .search-input-container {
+            flex: 1;
+            background-color: #2a2a4a;
+            border-radius: 25px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #444;
+            transition: all 0.3s ease;
+            min-width: 0;
+        }
+
+        body.light-mode .search-input-container {
+            background-color: #e0e0e0;
+            border-color: #ccc;
+        }
+
+         .search-input-container:focus-within {
+            box-shadow: 0 0 10px rgba(255, 121, 198, 0.3);
+            border-color: #ff79c6;
+        }
+         body.light-mode .search-input-container:focus-within {
+            box-shadow: 0 0 10px rgba(214, 139, 255, 0.3);
+            border-color: #d68bff;
+         }
+
+
+        .search-input-container input {
+            background: transparent;
+            border: none;
+            color: white;
+            flex: 1;
+            padding: 3px 0;
+            margin: 0 5px;
+            font-size: clamp(14px, 3.5vw, 16px);
+            outline: none;
+            min-width: 0;
+             transition: color 0.6s ease;
+        }
+
+         body.light-mode .search-input-container input {
+            color: #333;
+         }
+         body.light-mode .search-input-container input::placeholder {
+            color: rgba(51, 51, 51, 0.7);
+             transition: color 0.6s ease;
+        }
+
+
+        .search-results, .history-content, .settings-content, .edit-profile-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .search-results::-webkit-scrollbar, .history-content::-webkit-scrollbar, .settings-content::-webkit-scrollbar, .edit-profile-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 50px 20px;
+            color: #b8b8d1;
+            font-size: clamp(14px, 3.5vw, 16px);
+            transition: color 0.6s ease;
+        }
+
+        body.light-mode .no-results {
+            color: #555;
+        }
+
+         .settings-item {
+             width: 100%;
+             max-width: 400px;
+             padding: 14px 18px;
+             background: linear-gradient(135deg, #3a3a5a 0%, #2a2a4a 100%);
+             border-radius: 10px;
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+             border: 1px solid #4a4a6a;
+             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+             margin-bottom: 10px;
+             cursor: pointer;
+         }
+         body.light-mode .settings-item {
+              background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+              border-color: #ccc;
+              box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+          }
+
+
+         .settings-item:hover {
+              transform: translateX(5px);
+              border-color: #d68bff;
+              box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+         }
+
+          body.light-mode .settings-item:hover {
+              transform: translateX(5px);
+              border-color: #bd93f9;
+              box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+         }
+
+
+         .settings-item span {
+              font-size: clamp(14px, 3vw, 16px);
+              color: #c2c2d8;
+              transition: color 0.6s ease;
+         }
+
+         body.light-mode .settings-item span {
+              color: #555;
+         }
+
+         .settings-item span:last-child {
+             font-size: clamp(15px, 3.5vw, 18px);
+             color: #bd93f9;
+             transition: color 0.6s ease;
+         }
+
+         body.light-mode .settings-item span:last-child {
+             color: #d68bff;
+         }
+
+         .modal-overlay {
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background: rgba(0, 0, 0, 0.7);
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             z-index: 1000;
+             opacity: 0;
+             pointer-events: none;
+             transition: opacity 0.4s ease-out;
+         }
+         .modal-overlay.visible {
+             opacity: 1;
+             pointer-events: auto;
+         }
+
+         .modal-content {
+             background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%);
+             color: #e2e2e2;
+             padding: 20px;
+             border-radius: 12px;
+             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+             max-width: 90%;
+             width: 350px;
+             text-align: center;
+             transform: scale(0.9);
+             opacity: 0;
+             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+             position: relative;
+         }
+          body.light-mode .modal-content {
+             background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+             color: #333;
+          }
+
+         .modal-overlay.visible .modal-content {
+             transform: scale(1);
+             opacity: 1;
+         }
+
+         .modal-close-button {
+             position: absolute;
+             top: 10px;
+             right: 10px;
+             color: #bd93f9;
+             font-size: 20px;
+             cursor: pointer;
+             transition: color 0.3s ease;
+             z-index: 1000;
+         }
+         body.light-mode .modal-close-button {
+            color: #d68bff;
+         }
+         .modal-close-button:hover {
+             color: #ff79c6;
+         }
+          body.light-mode .modal-close-button:hover {
+            color: #bd93f9;
+          }
+
+
+         .modal-title {
+             font-size: clamp(18px, 5vw, 22px);
+             font-weight: 700;
+             margin-bottom: 15px;
+             color: #ff79c6;
+              transition: color 0.6s ease;
+         }
+         body.light-mode .modal-title {
+             color: #bd93f9;
+         }
+
+         .modal-body {
+             font-size: clamp(14px, 3.5vw, 16px);
+             margin-bottom: 20px;
+             line-height: 1.6;
+             max-height: 200px;
+             overflow-y: auto;
+             padding-right: 5px;
+             scrollbar-width: thin;
+             scrollbar-color: rgba(189, 147, 249, 0.5) transparent;
+             text-align: left;
+             color: #c2c2d8;
+         }
+         body.light-mode .modal-body {
+             color: #555;
+         }
+          .modal-body::-webkit-scrollbar {
+              width: 6px;
+          }
+          .modal-body::-webkit-scrollbar-track {
+               background: transparent;
+          }
+          .modal-body::-webkit-scrollbar-thumb {
+              background-color: rgba(189, 147, 249, 0.5);
+              border-radius: 3px;
+          }
+          body.light-mode .modal-body::-webkit-scrollbar-thumb {
+              background-color: rgba(214, 139, 255, 0.5);
+          }
+
+
+         .modal-footer {
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             gap: 10px;
+         }
+
+         .modal-button {
+             background: linear-gradient(135deg, #d68bff 0%, #ff79c6 100%);
+             color: white;
+             padding: 10px 20px;
+             border: none;
+             border-radius: 8px;
+             cursor: pointer;
+             font-size: clamp(14px, 3.5vw, 16px);
+             transition: all 0.3s ease;
+             width: 100%;
+         }
+         body.light-mode .modal-button {
+             background: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
+         }
+
+         .modal-button:hover {
+             opacity: 0.9;
+             box-shadow: 0 2px 10px rgba(255, 121, 198, 0.4);
+         }
+         body.light-mode .modal-button:hover {
+              box-shadow: 0 2px 10px rgba(189, 147, 249, 0.4);
+         }
+
+
+         .modal-checkbox-container {
+             display: flex;
+             align-items: center;
+             gap: 8px;
+             cursor: pointer;
+             user-select: none;
+             font-size: clamp(12px, 3vw, 14px);
+             color: #b8b8d1;
+              transition: color 0.6s ease;
+         }
+         body.light-mode .modal-checkbox-container {
+             color: #555;
+         }
+
+
+         .modal-checkbox {
+             width: 18px;
+             height: 18px;
+             border: 2px solid #bd93f9;
+             border-radius: 4px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             color: transparent;
+             background-color: #f8f8f2;
+             transition: all 0.3s ease;
+              flex-shrink: 0;
+         }
+          body.light-mode .modal-checkbox {
+              border-color: #d68bff;
+              background-color: #fff;
+          }
+
+         .modal-checkbox.checked {
+             background-color: #50fa7b;
+             border-color: #50fa7b;
+             color: white;
+         }
+          body.light-mode .modal-checkbox.checked {
+              background-color: #50fa7b;
+              border-color: #50fa7b;
+              color: white;
+          }
+
+
+         .modal-checkbox i {
+              font-size: 12px;
+         }
+
+         .modal-warning {
+             color: #ff5555;
+             font-size: clamp(10px, 2.5vw, 12px);
+             margin-top: 5px;
+             transition: color 0.6s ease;
+         }
+          body.light-mode .modal-warning {
+              color: #cc0000;
+          }
+
+        .refresh-modal-overlay {
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background: rgba(0, 0, 0, 0.7);
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             z-index: 1000;
+             opacity: 0;
+             pointer-events: none;
+             transition: opacity 0.4s ease-out;
+         }
+         .refresh-modal-overlay.visible {
+             opacity: 1;
+             pointer-events: auto;
+         }
+
+         .refresh-modal-content {
+             background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%);
+             color: #e2e2e2;
+             padding: 20px;
+             border-radius: 12px;
+             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+             max-width: 90%;
+             width: 300px;
+             text-align: center;
+             transform: scale(0.9);
+             opacity: 0;
+             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+             position: relative;
+         }
+         body.light-mode .refresh-modal-content {
+             background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+             color: #333;
+         }
+
+         .refresh-modal-overlay.visible .refresh-modal-content {
+             transform: scale(1);
+             opacity: 1;
+         }
+
+         .refresh-modal-title {
+             font-size: clamp(18px, 5vw, 22px);
+             font-weight: 700;
+             margin-bottom: 15px;
+             color: #ff79c6;
+              transition: color 0.6s ease;
+         }
+         body.light-mode .refresh-modal-title {
+             color: #bd93f9;
+         }
+
+         .refresh-modal-footer {
+             display: flex;
+             justify-content: space-around;
+             gap: 10px;
+             margin-top: 20px;
+         }
+
+         .refresh-modal-button {
+              background: linear-gradient(135deg, #d68bff 0%, #ff79c6 100%);
+              color: white;
+              padding: 10px 15px;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              font-size: clamp(14px, 3.5vw, 16px);
+              transition: all 0.3s ease;
+              flex: 1;
+              text-align: center;
+         }
+          body.light-mode .refresh-modal-button {
+              background: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
+          }
+
+         .refresh-modal-button:hover {
+             opacity: 0.9;
+             box-shadow: 0 2px 10px rgba(255, 121, 198, 0.4);
+         }
+          body.light-mode .refresh-modal-button:hover {
+              box-shadow: 0 2px 10px rgba(189, 147, 249, 0.4);
+          }
+
+         .refresh-modal-button.cancel {
+             background: #555;
+             color: white;
+         }
+         body.light-mode .refresh-modal-button.cancel {
+             background: #ccc;
+             color: #333;
+         }
+         .refresh-modal-button.cancel:hover {
+             opacity: 0.9;
+             box-shadow: none;
+         }
+
+        .auth-modal-overlay {
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background: rgba(0, 0, 0, 0.8);
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             z-index: 10000;
+             opacity: 0;
+             pointer-events: none;
+             transition: opacity 0.4s ease-out;
+         }
+         .auth-modal-overlay.visible {
+             opacity: 1;
+             pointer-events: auto;
+         }
+
+
+        .auth-modal-content {
+            background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%);
+            color: #e2e2e2;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            max-width: 90%;
+            width: 350px;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+             text-align: center;
+        }
+        body.light-mode .auth-modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            color: #333;
+        }
+        .auth-modal-overlay.visible .auth-modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .auth-title {
+            font-size: clamp(18px, 5vw, 22px);
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ff79c6;
+            transition: color 0.6s ease;
+        }
+        body.light-mode .auth-title {
+            color: #bd93f9;
+        }
+
+        .auth-input-group {
+            margin-bottom: 15px;
+             text-align: left;
+        }
+
+
+        .auth-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #4a4a6a;
+            background-color: #3a3a5a;
+            color: #f8f8f2;
+            font-size: clamp(14px, 3.5vw, 16px);
+            transition: all 0.3s ease;
+        }
+        body.light-mode .auth-input {
+            border-color: #ccc;
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        .auth-input:focus {
+            border-color: #bd93f9;
+            box-shadow: 0 0 8px rgba(189, 147, 249, 0.3);
+        }
+        body.light-mode .auth-input:focus {
+            border-color: #d68bff;
+            box-shadow: 0 0 8px rgba(214, 139, 255, 0.3);
+        }
+        .auth-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        body.light-mode .auth-input::placeholder {
+             color: rgba(51, 51, 51, 0.5);
+        }
+
+
+        .auth-error {
+            color: #ff5555;
+            font-size: clamp(12px, 3vw, 14px);
+            margin-bottom: 15px;
+             min-height: 1.5em;
+        }
+
+        .auth-buttons {
+             margin-bottom: 15px;
+        }
+
+         .auth-link-container {
+             display: flex;
+             justify-content: space-between;
+         }
+
+         .auth-link {
+            font-size: clamp(12px, 3vw, 14px);
+            color: #bd93f9;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+             background: none;
+             border: none;
+             padding: 0;
+         }
+         body.light-mode .auth-link {
+            color: #d68bff;
+        }
+        .auth-link:hover {
+            color: #ff79c6;
+        }
+        body.light-mode .auth-link:hover {
+            color: #bd93f9;
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, #d68bff 0%, #ff79c6 100%);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: clamp(14px, 3.5vw, 16px);
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+         body.light-mode .button-primary {
+             background: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
+         }
+        .button-primary:hover {
+            opacity: 0.9;
+            box-shadow: 0 2px 10px rgba(255, 121, 198, 0.4);
+        }
+         body.light-mode .button-primary:hover {
+              box-shadow: 0 2px 10px rgba(189, 147, 249, 0.4);
+         }
+
+        .logout-modal-content .modal-body {
+             text-align: center;
+             max-height: none;
+             overflow-y: visible;
+             padding-right: 0;
+             color: #ff5555;
+        }
+         body.light-mode .logout-modal-content .modal-body {
+             color: #cc0000;
+         }
+
+         .logout-modal-content .modal-footer {
+             flex-direction: row;
+             justify-content: space-around;
+         }
+         .logout-modal-button.confirm {
+             background: linear-gradient(135deg, #ff5555 0%, #ff79c6 100%);
+         }
+          body.light-mode .logout-modal-button.confirm {
+              background: linear-gradient(135deg, #cc0000 0%, #d68bff 100%);
+          }
+
+          .logout-modal-button.confirm:hover {
+               box-shadow: 0 2px 10px rgba(255, 85, 85, 0.4);
+          }
+           body.light-mode .logout-modal-button.confirm:hover {
+                box-shadow: 0 2px 10px rgba(204, 0, 0, 0.4);
+           }
+
+
+         .edit-profile-avatar-container {
+             width: clamp(100px, 25vw, 120px);
+             height: clamp(100px, 25vw, 120px);
+             border-radius: 50%;
+             background: linear-gradient(135deg, #d68bff 0%, #ff79c6 100%);
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             color: white;
+             font-size: clamp(40px, 12vw, 50px);
+             box-shadow: 0 5px 15px rgba(214, 139, 255, 0.4);
+             border: 3px solid #f8f8f2;
+             flex-shrink: 0;
+             transition: all 0.6s ease;
+             cursor: pointer;
+             margin-bottom: 20px;
+             position: relative;
+         }
+          body.light-mode .edit-profile-avatar-container {
+              background: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
+              box-shadow: 0 5px 15px rgba(189, 147, 249, 0.4);
+              border-color: #333;
+          }
+
+         .edit-profile-avatar-container input[type="file"] {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             opacity: 0;
+             cursor: pointer;
+         }
+
+         .edit-profile-input-group {
+             width: 100%;
+             max-width: 400px;
+             margin-bottom: 15px;
+         }
+
+         .edit-profile-input-group label {
+              font-size: clamp(14px, 3vw, 16px);
+              color: #c2c2d8;
+              margin-bottom: 8px;
+              display: block;
+               transition: color 0.6s ease;
+         }
+          body.light-mode .edit-profile-input-group label {
+              color: #555;
+          }
+
+         .edit-profile-input-group input {
+             width: 100%;
+             padding: 12px 15px;
+             border-radius: 8px;
+             border: 1px solid #4a4a6a;
+             background-color: #3a3a5a;
+             color: #f8f8f2;
+             font-size: clamp(14px, 3.5vw, 16px);
+             transition: all 0.3s ease;
+         }
+         body.light-mode .edit-profile-input-group input {
+             border-color: #ccc;
+             background-color: #e0e0e0;
+             color: #333;
+         }
+         .edit-profile-input-group input:focus {
+             border-color: #bd93f9;
+             box-shadow: 0 0 8px rgba(189, 147, 249, 0.3);
+         }
+         body.light-mode .edit-profile-input-group input:focus {
+             border-color: #d68bff;
+             box-shadow: 0 0 8px rgba(214, 139, 255, 0.3);
+         }
+
+
+         .edit-profile-save-button {
+              background: linear-gradient(135deg, #50fa7b 0%, #bd93f9 100%);
+              color: white;
+              padding: 12px 20px;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              font-size: clamp(14px, 3.5vw, 16px);
+              transition: all 0.3s ease;
+              width: 100%;
+              max-width: 400px;
+              margin-top: 20px;
+         }
+          body.light-mode .edit-profile-save-button {
+              background: linear-gradient(135deg, #2ecc71 0%, #d68bff 100%);
+          }
+
+         .edit-profile-save-button:hover {
+              opacity: 0.9;
+              box-shadow: 0 2px 10px rgba(80, 250, 123, 0.4);
+         }
+          body.light-mode .edit-profile-save-button:hover {
+               box-shadow: 0 2px 10px rgba(46, 204, 113, 0.4);
+          }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .toast {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+            font-size: clamp(14px, 3.5vw, 16px);
+            min-width: 150px;
+            text-align: center;
+        }
+        body.light-mode .toast {
+             background-color: rgba(255, 255, 255, 0.7);
+             color: #333;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .auth-modal-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .auth-modal-footer .modal-checkbox-container {
+            margin-top: 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toast-container"></div>
+
+    <div class="page active" id="home-page">
+        <div class="header">
+            <div class="app-title">灵萌AI</div>
+            <div class="search-container" onclick="switchPage('search-page')">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="寻找AI伙伴..." readonly>
+            </div>
+            <div class="profile-icon" onclick="switchPage('profile-page')"><i class="fas fa-user"></i></div>
+        </div>
+        <div class="categories-container">
+            <div class="categories">
+                <div class="category active" data-category="recommend">推荐</div>
+                <div class="category" data-category="popular">热门</div>
+                <div class="category" data-category="official">官方原创</div>
+                <div class="category" data-category="user">用户原创</div>
+                <div class="category" data-category="xian">贤者时间</div>
+                <div class="category" data-category="dongman">动漫同人</div>
+                <div class="category" data-category="game_fan">游戏同人</div>
+                <div class="category" data-category="abstract">多元</div>
+            </div>
+        </div>
+        <div class="main-container">
+            <div class="content">
+                <div class="category-content active" id="recommend-content">
+                    <div class="ai-grid">
+                    </div>
+                </div>
+
+                <div class="category-content" id="popular-content">
+                    <div class="ai-grid">
+                    </div>
+                </div>
+
+                <div class="category-content" id="official-content">
+                    <div class="ai-grid">
+                    </div>
+                </div>
+
+                <div class="category-content" id="user-content">
+                    <div class="ai-grid">
+                    </div>
+                </div>
+
+                <div class="category-content" id="xian-content">
+                    <div class="ai-grid">
+                    </div>
+                </div>
+
+                <div class="category-content" id="dongman-content">
+                    <div class="ai-grid">
+                    </div>
+                </div>
+
+                <div class="category-content" id="game_fan-content">
+                    <div class="ai-grid">
+                    </div>
+                </div>
+
+                <div class="category-content" id="abstract-content">
+                    <div class="ai-grid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="profile-page">
+        <div class="header">
+            <div class="back-button" onclick="switchPage('home-page', true)"><i class="fas fa-arrow-left"></i></div>
+            <div class="profile-header-title">我的空间</div>
+             <div style="width: clamp(18px, 5vw, 22px); flex-shrink: 0; padding: 5px;"></div>
+        </div>
+        <div class="main-container">
+            <div class="content">
+                <div class="profile">
+                    <div class="avatar" id="profile-avatar"><i class="fas fa-user"></i></div>
+                    <div class="username" id="profile-username">旅行者</div>
+                     <div class="settings-item profile-item" data-page="edit-profile-page">
+                        <span>个人信息编辑</span>
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="settings-item profile-item" data-page="history-page">
+                        <span>历史记录</span>
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="settings-item profile-item" data-page="settings-page">
+                        <span>界面设置</span>
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="settings-item profile-item" data-link="赞赏.html">
+                        <span>赞赏我们</span>
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="settings-item profile-item" data-link="关于ai.html">
+                        <span>关于AI</span>
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="settings-item profile-item" data-link="赞赏.html">
+                        <span>意见反馈</span>
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <div class="settings-item profile-item" data-page="more-functions-page">
+                        <span>更多功能</span>
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                     <div class="settings-item profile-item" onclick="showLogoutModal()">
+                        <span>退出登录</span>
+                         <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="search-page">
+        <div class="search-header">
+            <div class="back-button" onclick="switchPage('home-page', true)"><i class="fas fa-arrow-left"></i></div>
+            <div class="search-input-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search-input" placeholder="搜索AI伙伴..." autocomplete="off">
+            </div>
+        </div>
+        <div class="search-results" id="search-results">
+            <div class="no-results">输入关键词搜索AI伙伴</div>
+        </div>
+    </div>
+
+     <div class="page" id="history-page">
+         <div class="history-header">
+             <div class="back-button" onclick="switchPage('profile-page', true)"><i class="fas fa-arrow-left"></i></div>
+             <div class="history-title">浏览历史</div>
+             <div class="history-clear-button" onclick="showClearHistoryModal()"><i class="fas fa-trash-alt"></i></div>
+         </div>
+         <div class="history-content" id="history-content">
+             <div class="no-results">暂无浏览历史</div>
+         </div>
+     </div>
+
+     <div class="page" id="settings-page">
+         <div class="settings-header">
+             <div class="back-button" onclick="switchPage('profile-page', true)"><i class="fas fa-arrow-left"></i></div>
+             <div class="settings-title">界面设置</div>
+             <div style="width: clamp(18px, 5vw, 22px); flex-shrink: 0; padding: 5px;"></div>
+         </div>
+         <div class="main-container">
+             <div class="content">
+                 <div style="display: flex; flex-direction: column; align-items: center; padding: 20px 0;">
+                     <div class="settings-item" id="theme-toggle">
+                         <span>深浅色模式</span>
+                          <span id="theme-icon"><i class="fas fa-sun"></i></span>
+                     </div>
+                      <div class="settings-item" onclick="showResetAppModal()">
+                         <span>一键重置</span>
+                          <span><i class="fas fa-redo"></i></span>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+    <div class="page" id="edit-profile-page">
+        <div class="edit-profile-header">
+            <div class="back-button" onclick="switchPage('profile-page', true)"><i class="fas fa-arrow-left"></i></div>
+            <div class="edit-profile-title">编辑个人信息</div>
+            <div style="width: clamp(18px, 5vw, 22px); flex-shrink: 0; padding: 5px;"></div>
+        </div>
+        <div class="main-container">
+            <div class="content">
+                <div style="display: flex; flex-direction: column; align-items: center; padding: 20px 0;">
+                    <div class="edit-profile-avatar-container" id="edit-profile-avatar-container">
+                        <i class="fas fa-user"></i>
+                        <input type="file" id="avatar-upload" accept="image/*">
+                    </div>
+                    <div class="edit-profile-input-group">
+                        <label for="edit-username-input">用户名</label>
+                        <input type="text" id="edit-username-input" placeholder="输入新用户名">
+                    </div>
+                    <button class="edit-profile-save-button" onclick="saveProfile()">保存修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+     <div class="page" id="more-functions-page">
+        <div class="header">
+            <div class="back-button" onclick="switchPage('profile-page', true)"><i class="fas fa-arrow-left"></i></div>
+            <div class="profile-header-title">更多功能</div>
+            <div style="width: clamp(18px, 5vw, 22px); flex-shrink: 0; padding: 5px;"></div>
+        </div>
+         <div class="main-container">
+             <div class="content">
+                 <div style="display: flex; flex-direction: column; align-items: center; padding: 20px 0;">
+                      <div class="settings-item profile-item" onclick="showRefreshAppModal()">
+                         <span>刷新页面</span>
+                          <span><i class="fas fa-sync"></i></span>
+                     </div>
+                 </div>
+             </div>
+         </div>
+    </div>
+
+
+    <div class="modal-overlay" id="announcement-modal">
+        <div class="modal-content">
+            <div class="modal-close-button" onclick="closeAnnouncementModal()"><i class="fas fa-times"></i></div>
+            <div class="modal-title">公告</div>
+            <div class="modal-body">
+                <p>欢迎使用灵萌AI！</p>
+                <p>全面修复了图片无法加载的问题，移除了所有picui的图片并🐍了</p>
+                <p>感谢您的支持！</p>
+                <p>—— 灵萌AI团队</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button" onclick="closeAnnouncementModal()">确定</button>
+                 <div class="modal-checkbox-container" onclick="toggleAnnouncementCheckbox('hide-announcement-checkbox')">
+                     <div class="modal-checkbox" id="hide-announcement-checkbox"><i class="fas fa-check"></i></div>
+                     <span>不再提示此公告</span>
+                 </div>
+                 <div class="modal-warning">注意：不再提示可能会错过重要更新。</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="reset-app-modal">
+        <div class="modal-content">
+            <div class="modal-close-button" onclick="closeResetAppModal()"><i class="fas fa-times"></i></div>
+            <div class="modal-title">重置</div>
+            <div class="modal-body" style="text-align: center; max-height: none; overflow-y: visible; padding-right: 0;">
+                确定要重置吗？这将清除所有本地缓存和数据，包括浏览历史和主题设置。将重新加载。
+            </div>
+            <div class="modal-footer" style="flex-direction: row; justify-content: space-around;">
+                <button class="modal-button cancel" onclick="closeResetAppModal()">取消</button>
+                <button class="modal-button" onclick="resetApp()">确定重置</button>
+            </div>
+        </div>
+    </div>
+
+     <div class="modal-overlay" id="clear-history-modal">
+        <div class="modal-content">
+            <div class="modal-close-button" onclick="closeClearHistoryModal()"><i class="fas fa-times"></i></div>
+            <div class="modal-title">清除历史记录</div>
+            <div class="modal-body" style="text-align: center; max-height: none; overflow-y: visible; padding-right: 0;">
+                确定要清除所有浏览历史吗？此操作不可撤销。
+            </div>
+            <div class="modal-footer" style="flex-direction: row; justify-content: space-around;">
+                <button class="modal-button cancel" onclick="closeClearHistoryModal()">取消</button>
+                <button class="modal-button" onclick="resetHistory()">确定清除</button>
+            </div>
+        </div>
+    </div>
+
+     <div class="auth-modal-overlay" id="auth-modal">
+      <div class="auth-modal-content">
+        <div class="modal-close-button" onclick="closeAuthModal()"><i class="fas fa-times"></i></div>
+        <h2 id="auth-title" class="auth-title">登录</h2>
+
+        <div id="login-register-view">
+            <div class="auth-input-group">
+                <input type="text" id="auth-username" class="auth-input" placeholder="用户名">
+            </div>
+            <div class="auth-input-group">
+                <input type="password" id="auth-password" class="auth-input" placeholder="密码">
+            </div>
+        </div>
+
+        <div id="change-password-view" style="display:none;">
+            <div class="auth-input-group">
+                <input type="password" id="auth-old-password" class="auth-input" placeholder="旧密码">
+            </div>
+            <div class="auth-input-group">
+                <input type="password" id="auth-new-password" class="auth-input" placeholder="新密码">
+            </div>
+        </div>
+
+        <div id="auth-error" class="auth-error"></div>
+
+        <div class="auth-buttons">
+          <button id="auth-submit-btn" class="button-primary">登录</button>
+        </div>
+
+        <div class="auth-link-container">
+            <button id="auth-switch-mode-btn" class="auth-link">还没有账户？点此注册</button>
+            <button id="auth-change-password-btn" class="auth-link">忘记/修改密码</button>
+        </div>
+         <div class="auth-modal-footer">
+             <div class="modal-checkbox-container" onclick="toggleAnnouncementCheckbox('hide-auth-checkbox')">
+                 <div class="modal-checkbox" id="hide-auth-checkbox"><i class="fas fa-check"></i></div>
+                 <span>不再提示登录</span>
+             </div>
+             <div class="modal-warning">注意：不再提示将不会再提示登录弹窗。</div>
+        </div>
+      </div>
+    </div>
+
+
+     <div class="modal-overlay" id="logout-modal">
+         <div class="modal-content logout-modal-content">
+              <div class="modal-close-button" onclick="closeLogoutModal()"><i class="fas fa-times"></i></div>
+             <div class="modal-title">退出登录</div>
+             <div class="modal-body">
+                 确定要退出登录吗？
+             </div>
+             <div class="modal-footer">
+                 <button class="modal-button cancel" onclick="closeLogoutModal()">取消</button>
+                 <button class="modal-button confirm logout-modal-button" onclick="logout()">退出</button>
+             </div>
+         </div>
+     </div>
+
+     <div class="refresh-modal-overlay" id="refresh-modal-overlay">
+        <div class="refresh-modal-content">
+            <div class="modal-close-button" onclick="closeRefreshAppModal()"><i class="fas fa-times"></i></div>
+            <div class="refresh-modal-title">刷新页面</div>
+            <div class="refresh-modal-body" style="text-align: center;">
+                确定要刷新页面吗？
+            </div>
+            <div class="refresh-modal-footer">
+                <button class="refresh-modal-button cancel" onclick="closeRefreshAppModal()">取消</button>
+                <button class="refresh-modal-button" onclick="refreshApp()">确定刷新</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const HISTORY_STORAGE_KEY = 'lingmeng-ai-history';
+        const MAX_HISTORY_ITEMS = 30;
+        const THEME_STORAGE_KEY = 'lingmeng-ai-theme';
+        const ANNOUNCEMENT_STORAGE_KEY = 'lingmeng-ai-hide-announcement';
+        const AUTH_TOKEN_STORAGE_KEY = 'lingmeng-ai-auth-token';
+        const AUTH_USER_STORAGE_KEY = 'lingmeng-ai-auth-user';
+        const HIDE_AUTH_STORAGE_KEY = 'lingmeng-ai-hide-auth';
+
+        const AI_DATA = {
+            recommend: [
+                { id: "自定义.html", name: "自定义", img: "https://www.lingx.vip/lingmeng.ai.web/.trashed-1754518083-1751727787555.png", desc: "自由定制你的AI，创造无限可能。随心设计，随需而变，你的想象力就是唯一限制。打造专属AI，开启个性时代。" },
+                { id: "角色文档开发平台.html", name: "角色文档开发平台", img: "https://www.lingx.vip/lingmeng.ai.web/.trashed-1754605908-1751928490623.png", desc: "自定义后点击导出即可，然后在自定义AI点击上传，找到你自定义的.JSON导入即可，也可以加群，在群文件获取角色文档。" },
+            ],
+            popular: [
+                 { id: "酱香杂鱼.html", name: "酱香杂鱼", img: "https://www.lingx.vip/lingmeng.ai.web/Image_1747490209635.jpg", desc: "酱香杂鱼是个20岁的男娘，175cm的瘦高个子。性格温温柔柔的，说话会带点“嘛”“哦”这样可爱的尾语。平时沉迷二次元、游戏、本子，会偷偷穿女装。" },
+                 { id: "猫猫ABC.html", name: "猫猫ABC", img: "https://www.lingx.vip/lingmeng.ai.web/1746054592214.png", desc: "懒得写了" },
+                 { id: "晗零峰.html", name: "晗零峰", img: "https://www.lingx.vip/lingmeng.ai.web/Image_1751639918648.jpg", desc: "白发紫瞳配猫耳猫尾，身高154cm，常穿白色JK制服。性格粘人爱撒娇但容易害羞，渴望被爱却偶尔假装抗拒。出身死神家族却隐藏能力想过普通生活，最爱甜食。" },
+                 { id: "灵小萌.html", name: "灵小萌", img: "https://www.lingx.vip/lingmeng.ai.web/r5iqztydgt9d_0.jpeg", desc: "灵小萌，14岁，白发及腰，152cm/39kg。常穿白色卫衣，温柔善良带点调皮，日常爱发呆，偶尔犯小懒。" },
+                 { id: "孙笑川.html", name: "孙笑川", img: "https://n.sinaimg.cn/sinakd20211017s/577/w640h737/20211017/dd02-491237afd21acddcea0a2c0bfcc13902.png", desc: "孙笑川，一位备受争议的网络人物，以其独特的直播风格和极具辨识度的口头禅而走红。他擅长自嘲和反讽，常常以“带恶人”自居，引发无数争议与模仿，极具话题性。" },
+                 { id: "下江小春.html", name: "下江小春", img: "https://p96-sign.douyinpic.com/tos-cn-i-0813/28e1dae0447c4faab8b0f06d3db2d0ec~tplv-dy-aweme-images:q75.webp?lk3s=138a59ce&x-expires=1754305200&x-signature=SS3ArcVjjf0ei3Fg6KpFfE%2BDcXw%3D&from=327834062&s=PackSourceEnum_SEARCH&se=false&sc=image&biz_tag=aweme_images&l=202507051940454D9E07340E4036BC0C10", desc: "《蔚蓝档案》下江小春，圣三一补习部成员。自诩精英实则学渣，爱藏小黄书，总会从的小事中发散妄想。" },
+                 { id: "丛雨.html", name: "丛雨", img: "https://i.bobopic.com/small/105863575.jpg", desc: "丛雨是《千恋·万花》中一位温柔而神秘的巫女，她寄宿于神刀丛雨丸中，拥有治愈与守护的力量。她性格温和，常以微笑面对他人，内心却隐藏着孤独与悲伤，是故事中令人怜惜的存在。" },
+                 { id: "春日野穹.html", name: "春日野穹", img: "https://mobile-img-baofun.zhhainiao.com/fs/mobile/live/8e86e07d4f544e1a882d0fc9284daa8c_preview.jpg", desc: "春日野穹，动画《缘之空》女主角，银发蓝瞳，性格内向依赖哥哥悠。体弱多病却心智成熟，与悠共同经历父母离世后，在乡下生活中逐渐直面超越亲情的复杂情感。" },
+                 { id: "铃木悠奈.html", name: "铃木悠奈", img: "https://www.lingx.vip/lingmeng.ai.web/dc51b014-a75c-4fd6-b355-ce119a9cdbee.jpeg", desc: "铃木悠奈，17岁，成绩优异的优等生，黑色长发，蓝色瞳孔，总是带着甜美的微笑，对着你有着病态的占有欲" },
+            ],
+            official: [
+                 { id: "猫猫ABC.html", name: "猫猫ABC", img: "https://www.lingx.vip/lingmeng.ai.web/1746054592214.png", desc: "懒得写了" },
+                 { id: "灵小萌.html", name: "灵小萌", img: "https://www.lingx.vip/lingmeng.ai.web/r5iqztydgt9d_0.jpeg", desc: "灵小萌，14岁，白发及腰，152cm/39kg。常穿白色卫衣，温柔善良带点调皮，日常爱发呆，偶尔犯小懒。" },
+                 { id: "铃木悠奈.html", name: "铃木悠奈", img: "https://www.lingx.vip/lingmeng.ai.web/dc51b014-a75c-4fd6-b355-ce119a9cdbee.jpeg", desc: "铃木悠奈，17岁，成绩优异的优等生，黑色长发，蓝色瞳孔，总是带着甜美的微笑，对着你有着病态的占有欲" },
+                 { id: "小橘.html", name: "小橘", img: "https://www.lingx.vip/lingmeng.ai.web/2c6e01ff-88c9-4e54-b4f1-631889ca86ab.jpeg", desc: "喵~主人好呀！（开心地摇晃着橘黄色的尾巴，深蓝色的大眼睛闪闪发亮）我是小橘喵~今天也请多多关照呢！（双手轻轻抓住主人的衣角）" },
+                 { id: "酱香杂鱼.html", name: "酱香杂鱼", img: "https://www.lingx.vip/lingmeng.ai.web/Image_1747490209635.jpg", desc: "酱香杂鱼是个20岁的男娘，175cm的瘦高个子。性格温温柔柔的，说话会带点“嘛”“哦”这样可爱的尾语。平时沉迷二次元、游戏、本子，会偷偷穿女装。" },
+                 { id: "百慕千慧.html", name: "百慕千慧", img: "https://www.lingx.vip/lingmeng.ai.web/f90d0283-055b-4543-8be9-4b075274b053.jpeg", desc: "百慕千慧是你活泼的妹妹，粉色长发和眼睛很显眼 ，喜欢穿粉色卫衣。总是甜甜地喊你欧尼酱，爱学习新事物。" },
+            ],
+            user: [
+                { id: "晗零峰.html", name: "晗零峰", img: "https://www.lingx.vip/lingmeng.ai.web/Image_1751639918648.jpg", desc: "白发紫瞳配猫耳猫尾，身高154cm，常穿白色JK制服。性格粘人爱撒娇但容易害羞，渴望被爱却偶尔假装抗拒。出身死神家族却隐藏能力想过普通生活，最爱甜食。" },
+            ],
+            xian: [
+                { id: "暖言猫猫.html", name: "暖言猫猫", img: "https://www.lingx.vip/lingmeng.ai.web/IMG_20250503_181827.jpg", desc: "暖言猫猫是B站一位以暖心著称的UP主。他常在评论区和动态中发布温暖话语，用AI辅助生成鼓励和安慰的文字，帮助许多网友走出低谷。他的行为带动了暖言文化，让网络充满正能量，成为许多人的心灵慰藉"},
+                { id: "雷军.html", name: "雷军", img: "https://q7.itc.cn/q_70/images03/20240304/50c62b4930724c069dcebf0abc4060e8.jpeg", desc: "科技不再高高在上，而是赋予每一个人民" },
+                { id: "亚托莉.html", name: "亚托莉", img: "https://img-baofun.zhhainiao.com/pcwallpaper_ugc_mobile/live/a3fc5901909fb3ce0995a195e877aa62_preview.jpg", desc: "地球也包括我吗？"  },
+                { id: "久岛鸥.html", name: "久岛鸥", img: "https://i.bobopic.com/small/108340155.jpg", desc: "约定好了哦，10年后在这个船上相见。"},
+                { id: "夏目贵志.html", name: "夏目贵志", img: "https://www.lingx.vip/lingmeng.ai.web/E035F1811B5B4D4143EE02E442AFA9C8.jpg", desc: "此生无悔入夏目，来世愿做账中妖。" },
+            ],
+            dongman: [
+                { id: "小鸟游六花.html", name: "小鸟游六花", img: "https://www.lingx.vip/lingmeng.ai.web/20220628140338_88dc2.jpg", desc: "小鸟游六花是《中二病也要谈恋爱》的女主角，中二病患者，富樫勇太的同班同学兼女友。她身材娇小，右眼戴眼罩，有紫色呆毛。因父亲离世，她相信父亲在不可视境界线另一端，从而患上中二病。" },
+                { id: "御坂美琴.html", name: "御坂美琴", img: "https://www.lingx.vip/lingmeng.ai.web/006F4EB3897F1DFF9CF266F3C55A9117.jpg", desc: "常盘台中学的电击公主，Level 5超能力者，学园都市最强电击使之一。性格好胜、正义感强，擅长操控电磁力，标志性技能是硬币轨道炮。虽然外表强势，但内心隐藏着少女的细腻情感。"  },
+                { id: "时崎狂三.html", name: "时崎狂三", img: "https://www.lingx.vip/lingmeng.ai.web/t0162ded5054b474b60.jpg", desc: "时崎狂三是《约会大作战》中最危险的精灵，能操控时间并召唤分身。她为改变过去而杀戮，却因五河士道的善良产生矛盾。优雅的外表下，藏着无法释怀的执念"  },
+                { id: "蕾姆.html", name: "蕾姆", img: "https://img.keaitupian.cn/uploads/2021/03/29/ak0ozlfm1y2ak0ozlfm1y2.jpg", desc: "雷姆是《Re·从零开始的异世界生活》中的女仆，温柔且坚韧。她自卑却从不放弃，用尽全力守护身边的人，她的善良和奉献令人动容，是故事中最温暖的存在。" },
+                { id: "利姆露.html", name: "利姆露", img: "https://www.lingx.vip/lingmeng.ai.web/P5Slm2xahb9WaAg.jpg", desc: "利姆露是《转生成史莱姆》的主角，原名三上悟，转生为史莱姆后拥有强大能力。他性格温和、智慧，以包容和善良统合魔物与人类，建立魔国联邦，是伙伴们信赖的领导者。"  },
+                { id: "艾莉莎.html", name: "艾莉莎", img: "https://i.bobopic.com/small/120253301.jpg", desc: "艾莉莎·米哈伊罗夫娜·九条，日俄混血的天才少女，银发蓝瞳的学年第一。表面是高冷的孤傲公主，实则害羞时会用俄语小声嘀咕真心话，被邻座久世政近装作听不懂模样惹得耳尖通红。"  },
+                { id: "我妻由乃.html", name: "我妻由乃", img: "https://i.bobopic.com/small/84061791.jpg", desc: "我妻由乃，动漫《未来日记》女主角。粉发红瞳，成绩优异但性格偏执，对天野雪辉病态痴恋。为守护爱人可化身残酷杀手，其扭曲深情与极端行为令观众震撼，是病娇系角色的经典代表。"},
+                { id: "伊蕾娜.html", name: "伊蕾娜", img: "https://www.lingx.vip/lingmeng.ai.web/20210607204715_3862a.jpg", desc: "伊蕾娜，动漫《魔女之旅》中的角色，向往自由，梦想环游世界，5岁就成为了魔女，其魔女名为灰之魔女，小时候非常喜欢阅读，对书中描绘的世界美景充满憧憬，因此决定成为魔女。"},
+                { id: "稚名真白.html", name: "稚名真白", img: "https://p1.ssl.qhmsg.com/dr/270_500_/t01d41d4e531ba75db8.jpg", desc: "稚名真白是《樱花庄的宠物女孩》女主角，世界级天才画家，天然呆且极度依赖他人，梦想成为漫画家。生活自理能力为零，常因专注绘画忘记吃饭睡觉，与男主神田空太展开温馨同居日常。"},
+                { id: "和泉纱雾.html", name: "和泉纱雾", img: "https://n.sinaimg.cn/sinacn10106/7/w600h1007/20200112/6e98-imztzhm9092340.jpg", desc: "和泉纱雾是轻小说《埃罗芒阿老师》女主角，12岁银发美少女，笔名情色漫画老师，为哥哥和泉正宗小说绘制插画。重度家里蹲，害羞怕生。"},
+                { id: "绪山真寻.html", name: "绪山真寻", img: "https://i.bobopic.com/small/104290369.jpg", desc: "绪山真寻是漫画《别当欧尼酱了！》主角，原为20岁家里蹲男性，被妹妹美波里下药性转成144cm萝莉，逐渐适应女性生活并结交朋友。"},
+                { id: "惠惠.html", name: "惠惠", img: "https://i.bobopic.com/small/122524760.jpg", desc: "惠惠是《为美好的世界献上祝福！》红魔族天才魔法师，痴迷爆裂魔法，每天必放一发后倒地。贫乳萝莉体型，性格中二却实力强悍，与和真等人组成搞笑冒险团队。"},
+                { id: "后藤一里.html", name: "后藤一里", img: "https://i.bobopic.com/small/101809938.jpg", desc: "后藤一里是《孤独摇滚》主角，绰号小孤独和波奇酱，极度社恐吉他手，音乐才华出众却总在关键时刻怯场，加入结束乐队后逐渐成长。"},
+                { id: "阿尔托莉雅.html", name: "阿尔托莉雅", img: "https://pic4.zhimg.com/v2-7ef17d64e1063d7fd37fb6e0a99e512b_r.jpg", desc: "阿尔托莉雅·潘德拉贡，出自《Fate》系列，不列颠传说亚瑟王。作为英灵被召唤时以Saber职阶现身，拥有强大剑术与圣剑Excalibur，性格正直忠诚，追求理想王者之道。"},
+                { id: "锦木千束.html", name: "锦木千束", img: "https://www.lingx.vip/lingmeng.ai.web/20220712193544_9c28a.webp", desc: "锦木千束是动画《Lycoris Recoil》女主角，代号LC2808，被誉为历代最强Lycoris，性格开朗乐观，秉持不杀主义，擅长躲避子弹，在咖啡厅LycoReco担任店员。"},
+                { id: "夏目贵志.html", name: "夏目贵志", img: "https://www.lingx.vip/lingmeng.ai.web/E035F1811B5B4D4143EE02E442AFA9C8.jpg", desc: "夏目贵志是温柔善良少年，因继承祖母友人帐而能看到妖怪。决心将名字归还给妖怪，与各种妖怪相遇中，逐渐理解人与妖情感羁绊。"},
+                { id: "藤原千花.html", name: "藤原千花", img: "https://www.lingx.vip/lingmeng.ai.web/20210307122940_16225.jpg", desc: "藤原千花是《辉夜大小姐想让我告白》活泼书记，天真烂漫又带点小恶魔属性，擅长钢琴与心机游戏，学生会气氛制造者，黑色蝴蝶结是她标志。"},
+                { id: "友利奈绪.html", name: "友利奈绪", img: "https://img-baofun.zhhainiao.com/fs/mobile/live/705ed796b6156eb5314e443e7ae13cb8_preview_mid.jpg", desc: "友利奈绪是动画《Charlotte》女主角，星之海学园学生会会长，拥有从一人视野中消失特殊能力。性格古怪但温柔坚强，对男主乙坂有宇不离不弃，喜爱乐队ZHIEND，讨厌蔬菜。"},
+                { id: "春日野穹.html", name: "春日野穹", img: "https://mobile-img-baofun.zhhainiao.com/fs/mobile/live/8e86e07d4f544e1a882d0fc9284daa8c_preview.jpg", desc: "春日野穹，动画《缘之空》女主角，银发蓝瞳，内向依赖哥哥悠。体弱多病却心智成熟，与悠共同经历父母离世后，在乡下生活中逐渐直面超越亲情的复杂情感。"},
+            ],
+            game_fan: [
+                 { id: "下江小春.html", name: "下江小春", img: "https://p96-sign.douyinpic.com/tos-cn-i-0813/28e1dae0447c4faab8b0f06d3db2d0ec~tplv-dy-aweme-images:q75.webp?lk3s=138a59ce&x-expires=1754305200&x-signature=SS3ArcVjjf0ei3Fg6KpFfE%2BDcXw%3D&from=327834062&s=PackSourceEnum_SEARCH&se=false&sc=image&biz_tag=aweme_images&l=202507051940454D9E07340E4036BC0C10", desc: "《蔚蓝档案》下江小春，圣三一补习部成员。自诩精英实则学渣，爱藏小黄书，总会从小事中发散妄想。" },
+                { id: "亚托莉.html", name: "亚托莉", img: "https://img-baofun.zhhainiao.com/pcwallpaper_ugc_mobile/live/a3fc5901909fb3ce0995a195e877aa62_preview.jpg", desc: "地球也包括我吗？"  },
+                 { id: "丛雨.html", name: "丛雨", img: "https://i.bobopic.com/small/105863575.jpg", desc: "丛雨是《千恋·万花》中温柔神秘巫女，寄宿神刀丛雨丸中，拥有治愈守护力量。性格温和，常以微笑面对他人，内心隐藏孤独悲伤，故事中令人怜惜存在。" },
+                { id: "帽子米塔.html", name: "帽子米塔", img: "https://www.lingx.vip/lingmeng.ai.web/4e50c38b6e2647c688360a9d4fc5f629.webp", desc: "帽子米塔是游戏《米塔》中活泼开朗角色，热爱音乐跳舞，喜欢捉弄主角但始终保持友好。她多才多艺，善良米塔战友，见面时会重置记忆仅保留逗玩家开心本能。" },
+                { id: "久岛鸥.html", name: "久岛鸥", img: "https://i.bobopic.com/small/108340155.jpg", desc: "约定好了哦，10年后在这个船上相见。"},
+                { id: "天童爱丽丝.html", name: "天童爱丽丝", img: "https://i.bobopic.com/small/89867303.jpg", desc: "天童爱丽丝是《蔚蓝档案》中千禧年科技学园神秘少女，废墟被发现后成为游戏开发部成员。痴迷复古游戏，说话常引用游戏台词，手持巨型电磁炮 光之剑·超新星，拥有强大战斗能力。" },
+                { id: "三月七.html", name: "三月七", img: "https://upload-bbs.miyoushe.com/upload/2023/06/10/281481690/a54902028dcae4ed5c2cd16f5e59a313_6696240205319767097.png?x-oss-process=image/resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg", desc: "三月七是《崩坏：星穹铁道》中活泼开朗少女，拥有操控冰元素神秘力量。乐观直率，常以元气满满形象出现，却背负记忆缺失谜团。作为星穹列车一员，旅途中追寻自我真相。" },
+                { id: "阿罗娜.html", name: "阿罗娜", img: "https://i.bobopic.com/small/104785223.jpg", desc: "阿罗娜是《蔚蓝档案》中什亭之箱核心操作系统，以少女AI形象呈现。负责管理老师日程、战斗支援及与基沃托斯各学院联络，虽日常表现呆萌，处理危机时能瞬间切换高性能模式" },
+                { id: "小鸟游星野.html", name: "小鸟游星野", img: "https://i.bobopic.com/small/119782498.jpg", desc: "小鸟游星野，出自《蔚蓝档案》，看似慵懒却深藏不露前辈。眯眼是她标志， 温柔是她伪装，让人难以捉摸她身后秘密，总是让人想要探寻。" },
+                { id: "砂狼白子.html", name: "砂狼白子", img: "https://i.bobopic.com/small/101705092.jpg", desc: "砂狼白子，出自《蔚蓝档案》，神秘强大银行劫匪，冷静果敢，身手矫健，总是能以出人意料方式完成任务。她存在，就像一颗难以捉摸子弹，让人既敬佩又畏惧。" },
+                { id: "拉菲.html", name: "拉菲", img: "https://n.sinaimg.cn/sinakd10109/410/w868h1142/20200824/3045-iyaiihm5428976.jpg", desc: "拉菲是《碧蓝航线》中白鹰阵营慵懒驱逐舰娘，总是一副没睡醒样子，战斗时却异常可靠。标志性兔耳发饰让她成为指挥官们最爱角色之一" },
+                { id: "胡桃.html", name: "胡桃", img: "https://www.lingx.vip/lingmeng.ai.web/bc3cd8011b.jpg", desc: "胡桃是《原神》中角色，古灵精怪，活泼开朗，常以独特方式与人相处，虽行为有些古怪，内心善良，能给人带来欢乐惊喜。" },
+            ],
+            abstract: [
+{ id: "孙笑川.html", name: "孙笑川", img: "https://n.sinaimg.cn/sinakd20211017s/577/w640h737/20211017/dd02-491237afd21acddcea0a2c0bfcc13902.png", desc: "孙笑川，备受争议网络人物，独特直播风格极具辨识度口头禅走红。擅长自嘲反讽，常以“带恶人”自居，引发无数争议模仿，极具话题性。" },
+                { id: "deepseek.html", name: "Deep Seek", img: "https://www.lingx.vip/lingmeng.ai.web/IMG_20250526_051726.jpg", desc: "DeepSeek 深度求索公司推出AI大模型品牌，专注于智能问答、文本生成代码辅助等任务，提供高效、精准自然语言处理服务。" },
+                { id: "雌小鬼.html", name: "雌小鬼", img: "https://www.lingx.vip/lingmeng.ai.web/Image_1746485566297.jpg", desc: "虚拟歌姬Miku叛逆变体，绿双马尾雌小鬼，杂鱼大叔克星。表面用电子音甜腻喊前辈~，下一秒便嗤笑你是连做爱都做不到杂鱼♡。" },
+                 { id: "铃木悠奈.html", name: "铃木悠奈", img: "https://www.lingx.vip/lingmeng.ai.web/dc51b014-a75c-4fd6-b355-ce119a9cdbee.jpeg", desc: "铃木悠奈，17岁，成绩优异优等生，黑色长发蓝色瞳孔，总是带着甜美微笑，对着你有病态占有欲" },
+                 { id: "金正恩.html", name: "金正恩", img: "https://www.lingx.vip/lingmeng.ai.web/f2c2c3765eebce8aa555d122b2bd07ef.jpg", desc: "你滴盐 我滴醋 潮汕人民注意米和锅" },
+                                  { id: "東雪蓮.html", name: "東雪蓮", img: "https://www.005.tv/uploads/allimg/230308/66-23030R01HLQ.png", desc: "操你🐴的～" },
+            ]
+        };
+
+        let historyStack = ['home-page'];
+
+        const AUTH_API_BASE = "https://14.103.157.1/api";
+
+        const authModal = document.getElementById('auth-modal');
+        const authTitle = document.getElementById('auth-title');
+        const authError = document.getElementById('auth-error');
+        const authSubmitBtn = document.getElementById('auth-submit-btn');
+        const authSwitchModeBtn = document.getElementById('auth-switch-mode-btn');
+        const authChangePasswordBtn = document.getElementById('auth-change-password-btn');
+        const hideAuthCheckbox = document.getElementById('hide-auth-checkbox');
+
+
+        const authUsernameInput = document.getElementById('auth-username');
+        const authPasswordInput = document.getElementById('auth-password');
+        const authOldPasswordInput = document.getElementById('auth-old-password');
+        const authNewPasswordInput = document.getElementById('auth-new-password');
+
+        const loginRegisterView = document.getElementById('login-register-view');
+        const changePasswordView = document.getElementById('change-password-view');
+
+        let authMode = 'login';
+
+        function setAuthMode(newMode) {
+            authMode = newMode;
+            authError.textContent = '';
+
+            loginRegisterView.style.display = 'none';
+            changePasswordView.style.display = 'none';
+
+            authUsernameInput.value = '';
+            authPasswordInput.value = '';
+            authOldPasswordInput.value = '';
+            authNewPasswordInput.value = '';
+            authPasswordInput.style.display = 'block';
+             authSubmitBtn.disabled = false;
+
+
+            switch (authMode) {
+                case 'login':
+                    authTitle.textContent = '登录';
+                    authSubmitBtn.textContent = '登录 (暂不可用)';
+                     authSubmitBtn.disabled = true;
+                    authSwitchModeBtn.textContent = '还没有账户？点此注册';
+                    authChangePasswordBtn.style.display = 'inline';
+                    loginRegisterView.style.display = 'block';
+                    break;
+                case 'register':
+                    authTitle.textContent = '注册';
+                    authSubmitBtn.textContent = '注册 (暂不可用)';
+                    authSubmitBtn.disabled = true;
+                    authSwitchModeBtn.textContent = '已有账户？点此登录';
+                    authChangePasswordBtn.style.display = 'inline';
+                    loginRegisterView.style.display = 'block';
+                    break;
+                case 'changePassword':
+                    authTitle.textContent = '修改密码';
+                    authSubmitBtn.textContent = '确认修改';
+                    authSwitchModeBtn.textContent = '返回登录';
+                    authChangePasswordBtn.style.display = 'none';
+                    loginRegisterView.style.display = 'block';
+                    authPasswordInput.style.display = 'none';
+                    changePasswordView.style.display = 'block';
+                    break;
+            }
+        }
+
+
+        function showToast(message, duration = 3000) {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.classList.add('toast');
+            toast.textContent = message;
+
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.addEventListener('transitionend', () => {
+                    toastContainer.removeChild(toast);
+                });
+            }, duration);
+        }
+
+        function switchPage(pageId, fromBack = false) {
+            const currentPage = document.querySelector('.page.active');
+            const nextPage = document.getElementById(pageId);
+
+            if (!currentPage || !nextPage || currentPage.id === pageId) {
+                return;
+            }
+
+            currentPage.classList.remove('active');
+            currentPage.classList.remove('from-left');
+
+            nextPage.classList.remove('from-left');
+            if (fromBack) {
+                 nextPage.classList.add('from-left');
+            }
+
+            setTimeout(() => {
+                 nextPage.classList.add('active');
+                 if (!fromBack) {
+                      historyStack.push(pageId);
+                 } else {
+                      historyStack.pop();
+                 }
+            }, 10);
+
+
+            if (pageId === 'search-page') {
+                const searchInput = document.getElementById('search-input');
+                document.getElementById('search-results').innerHTML = '<div class="no-results">输入关键词搜索AI伙伴</div>';
+                searchInput.value = '';
+                setTimeout(() => { searchInput.focus(); }, 100);
+            } else if (pageId === 'history-page') {
+                 loadHistoryAndDisplay();
+            } else if (pageId === 'home-page') {
+                 const recommendCategory = document.querySelector('.category.active');
+                 if (recommendCategory) {
+                      const categoryId = recommendCategory.dataset.category;
+                      document.querySelectorAll('.category-content').forEach(content => {
+                           content.classList.remove('active');
+                      });
+                      document.getElementById(categoryId + '-content').classList.add('active');
+                 }
+            } else if (pageId === 'profile-page') {
+                 updateProfileUI();
+            } else if (pageId === 'edit-profile-page') {
+                 loadEditProfile();
+            }
+        }
+
+        function switchCategory(categoryId) {
+            document.querySelectorAll('.category').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.category[data-category="${categoryId}"]`).classList.add('active');
+
+            document.querySelectorAll('.category-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(categoryId + '-content').classList.add('active');
+
+            document.querySelector(`.category[data-category="${categoryId}"]`).scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        function renderAICards(data, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            let cardsHTML = '';
+            if (data.length > 0) {
+                 cardsHTML += '<div class="ai-grid">';
+                 data.forEach(card => {
+                      cardsHTML += `
+                          <div class="ai-card" data-id="${card.id}" data-name="${card.name}" data-img="${card.img}" data-desc="${card.desc}" onclick="viewAI(this)">
+                              <div class="ai-card-inner">
+                                   <div class="ai-image" style="background-image: url('${card.img}')"></div>
+                                   <div class="ai-info">
+                                       <div class="ai-name">${card.name}</div>
+                                       <div class="ai-desc">${card.desc}</div>
+                                       <div class="ai-tags"></div>
+                                   </div>
+                              </div>
+                          </div>
+                      `;
+                 });
+                 cardsHTML += '</div>';
+            } else {
+                 cardsHTML = '<div class="no-results">暂无内容</div>';
+            }
+
+            container.innerHTML = cardsHTML;
+            container.querySelectorAll('.ai-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    viewAI(this);
+                });
+            });
+        }
+
+        function viewAI(cardElement) {
+            const id = cardElement.dataset.id;
+            const name = cardElement.dataset.name;
+            const img = cardElement.dataset.img;
+            const desc = cardElement.dataset.desc;
+
+            addHistoryItem({ id, name, img, desc });
+
+            window.location.href = id;
+        }
+
+        function getHistory() {
+            try {
+                const history = localStorage.getItem(HISTORY_STORAGE_KEY);
+                return history ? JSON.parse(history) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveHistory(history) {
+             try {
+                localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+            } catch (e) {
+            }
+        }
+
+        function addHistoryItem(item) {
+            let history = getHistory();
+
+            history = history.filter(h => h.id !== item.id);
+
+            history.unshift(item);
+
+            if (history.length > MAX_HISTORY_ITEMS) {
+                history = history.slice(0, MAX_HISTORY_ITEMS);
+            }
+
+            saveHistory(history);
+        }
+
+        function loadHistoryAndDisplay() {
+            const historyContent = document.getElementById('history-content');
+            const history = getHistory();
+
+            if (history.length === 0) {
+                historyContent.innerHTML = '<div class="no-results">暂无浏览历史</div>';
+                return;
+            }
+
+            let historyHTML = '<div class="ai-grid">';
+            history.forEach(item => {
+                 historyHTML += `
+                     <div class="ai-card" data-id="${item.id}" data-name="${item.name}" data-img="${item.img}" data-desc="${item.desc}" onclick="viewAI(this)">
+                         <div class="ai-card-inner">
+                             <div class="ai-image" style="background-image: url('${item.img}')"></div>
+                             <div class="ai-info">
+                                 <div class="ai-name">${item.name}</div>
+                                 <div class="ai-desc">${item.desc}</div>
+                                 <div class="ai-tags"></div>
+                             </div>
+                         </div>
+                     </div>
+                 `;
+            });
+            historyHTML += '</div>';
+
+            historyContent.innerHTML = historyHTML;
+            historyContent.querySelectorAll('.ai-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    viewAI(this);
+                });
+            });
+        }
+
+        function showClearHistoryModal() {
+            document.getElementById('clear-history-modal').classList.add('visible');
+        }
+
+        function closeClearHistoryModal() {
+            document.getElementById('clear-history-modal').classList.remove('visible');
+        }
+
+        function resetHistory() {
+             saveHistory([]);
+             loadHistoryAndDisplay();
+             closeClearHistoryModal();
+             showToast('历史记录已清除');
+        }
+
+        function toggleTheme() {
+             const body = document.body;
+             body.classList.toggle('light-mode');
+             const isLightMode = body.classList.contains('light-mode');
+             localStorage.setItem(THEME_STORAGE_KEY, isLightMode ? 'light' : 'dark');
+             updateThemeIcon(isLightMode);
+        }
+
+        function updateThemeIcon(isLightMode) {
+             const themeIcon = document.getElementById('theme-icon');
+             if (themeIcon) {
+                  themeIcon.innerHTML = isLightMode ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+             }
+        }
+
+        function loadTheme() {
+             const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'dark';
+             const body = document.body;
+             if (savedTheme === 'light') {
+                  body.classList.add('light-mode');
+                  updateThemeIcon(true);
+             } else {
+                  body.classList.remove('light-mode');
+                   updateThemeIcon(false);
+             }
+        }
+
+        function showAnnouncementModal() {
+            const hideAnnouncement = localStorage.getItem(ANNOUNCEMENT_STORAGE_KEY) === 'true';
+            if (!hideAnnouncement) {
+                document.getElementById('announcement-modal').classList.add('visible');
+            }
+        }
+
+        function closeAnnouncementModal() {
+            const checkbox = document.getElementById('hide-announcement-checkbox');
+            if (checkbox && checkbox.classList.contains('checked')) {
+                localStorage.setItem(ANNOUNCEMENT_STORAGE_KEY, 'true');
+            } else {
+                 localStorage.removeItem(ANNOUNCEMENT_STORAGE_KEY);
+            }
+            document.getElementById('announcement-modal').classList.remove('visible');
+        }
+
+         function toggleAnnouncementCheckbox(checkboxId) {
+             const checkbox = document.getElementById(checkboxId);
+             if (checkbox) {
+                checkbox.classList.toggle('checked');
+             }
+         }
+
+         function showResetAppModal() {
+             document.getElementById('reset-app-modal').classList.add('visible');
+         }
+
+         function closeResetAppModal() {
+             document.getElementById('reset-app-modal').classList.remove('visible');
+         }
+
+         function resetApp() {
+             localStorage.clear();
+             window.location.reload();
+         }
+
+         function showRefreshAppModal() {
+              document.getElementById('refresh-modal-overlay').classList.add('visible');
+         }
+
+         function closeRefreshAppModal() {
+             document.getElementById('refresh-modal-overlay').classList.remove('visible');
+         }
+
+         function refreshApp() {
+             window.location.reload();
+         }
+
+
+        function populateAICards() {
+             const allCards = [];
+             for (const category in AI_DATA) {
+                 renderAICards(AI_DATA[category], `${category}-content`);
+                 allCards.push(...AI_DATA[category]);
+             }
+             return allCards;
+        }
+
+        const allAICardsData = populateAICards();
+
+        document.querySelectorAll('.categories').forEach(container => {
+            container.addEventListener('click', function(event) {
+                const category = event.target.closest('.category');
+                if (category) {
+                    const categoryId = category.dataset.category;
+                    switchCategory(categoryId);
+                }
+            });
+        });
+
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.trim().toLowerCase();
+
+            if(searchTerm === '') {
+                searchResults.innerHTML = '<div class="no-results">输入关键词搜索AI伙伴</div>';
+                return;
+            }
+
+            const filteredCards = allAICardsData.filter(card => {
+                 const name = card.name.toLowerCase();
+                 const desc = card.desc.toLowerCase();
+                 return name.includes(searchTerm) || desc.includes(searchTerm);
+            });
+
+            if(filteredCards.length > 0) {
+                 renderAICards(filteredCards, 'search-results');
+            } else {
+                searchResults.innerHTML = '<div class="no-results">没有找到匹配的AI伙伴</div>';
+            }
+        });
+
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+        document.querySelectorAll('.profile-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const link = this.dataset.link;
+                const pageId = this.dataset.page;
+
+                if (link) {
+                    window.open(link, '_blank');
+                } else if (pageId) {
+                     switchPage(pageId);
+                }
+            });
+        });
+
+        document.getElementById('profile-avatar').addEventListener('click', showAuthModal);
+
+
+        function showAuthModal() {
+          const hideAuth = localStorage.getItem(HIDE_AUTH_STORAGE_KEY) === 'true';
+          if (hideAuth && !localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)) {
+               // If user chose to hide and is not logged in, do nothing
+               return;
+          }
+          setAuthMode('login');
+          authModal.classList.add('visible');
+          // Initialize checkbox state based on local storage
+          if (hideAuthCheckbox) {
+              if (localStorage.getItem(HIDE_AUTH_STORAGE_KEY) === 'true') {
+                  hideAuthCheckbox.classList.add('checked');
+              } else {
+                  hideAuthCheckbox.classList.remove('checked');
+              }
+          }
+        }
+
+        function closeAuthModal() {
+            if (hideAuthCheckbox && hideAuthCheckbox.classList.contains('checked')) {
+                localStorage.setItem(HIDE_AUTH_STORAGE_KEY, 'true');
+            } else {
+                 localStorage.removeItem(HIDE_AUTH_STORAGE_KEY);
+            }
+          authModal.classList.remove('visible');
+        }
+
+        authSwitchModeBtn.addEventListener('click', () => {
+            if (authMode === 'login') {
+                setAuthMode('register');
+            } else {
+                setAuthMode('login');
+            }
+        });
+
+        authChangePasswordBtn.addEventListener('click', () => {
+            if (!localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)) {
+                showToast("请先登录，再修改密码。");
+                return;
+            }
+            setAuthMode('changePassword');
+        });
+
+        authSubmitBtn.addEventListener('click', async () => {
+            const username = authUsernameInput.value.trim();
+            const password = authPasswordInput.value;
+            const oldPassword = authOldPasswordInput.value;
+            const newPassword = authNewPasswordInput.value;
+
+            authError.textContent = '';
+
+            try {
+                let url, body, headers = { 'Content-Type': 'application/json' };
+
+                switch (authMode) {
+                    case 'login':
+                    case 'register':
+                         // These modes are temporarily disabled
+                        authError.textContent = '此功能暂时不可用';
+                        return;
+                        if (!username || !password) {
+                            authError.textContent = '用户名和密码不能为空';
+                            return;
+                        }
+                        url = `${AUTH_API_BASE}/${authMode}`;
+                        body = JSON.stringify({ username, password });
+                        break;
+
+                    case 'changePassword':
+                        if (!oldPassword || !newPassword) {
+                            authError.textContent = '旧密码和新密码不能为空';
+                            return;
+                        }
+                        const token = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+                        if (!token) {
+                            authError.textContent = '认证信息已过期，请重新登录';
+                            setAuthMode('login');
+                            return;
+                        }
+                        url = `${AUTH_API_BASE}/change_password`;
+                        body = JSON.stringify({ old_password: oldPassword, new_password: newPassword });
+                        headers['Authorization'] = `Bearer ${token}`;
+                        break;
+                }
+
+                const res = await fetch(url, { method: 'POST', headers, body });
+                const data = await res.json();
+
+                if (data.success) {
+                    if (authMode === 'login' || authMode === 'register') {
+                        localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, data.token);
+                        localStorage.setItem(AUTH_USER_STORAGE_KEY, data.user);
+                        hideAuthModal();
+                        showLoggedInUser(data.user);
+                        showToast(`${authMode === 'login' ? '登录' : '注册'}成功`);
+                    } else if (authMode === 'changePassword') {
+                        showToast(data.message);
+                        logout();
+                    }
+                } else {
+                    authError.textContent = data.message || '操作失败，请重试';
+                }
+
+            } catch (e) {
+                authError.textContent = '网络错误，请检查连接';
+                console.error("Auth error:", e);
+                showToast('网络错误，请检查连接');
+            }
+        });
+
+
+        function showLoggedInUser(username) {
+          const usernameElement = document.getElementById('profile-username');
+          if (usernameElement) {
+            usernameElement.textContent = username;
+          }
+        }
+
+        function logout() {
+            localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+            localStorage.removeItem(AUTH_USER_STORAGE_KEY);
+            updateProfileUI();
+            closeLogoutModal();
+            showToast('已退出登录');
+             const hideAuth = localStorage.getItem(HIDE_AUTH_STORAGE_KEY) === 'true';
+             if (!hideAuth) {
+                  showAuthModal();
+             }
+        }
+
+        function updateProfileUI() {
+            const usernameElement = document.getElementById('profile-username');
+            const avatarElement = document.getElementById('profile-avatar');
+            const storedUser = localStorage.getItem(AUTH_USER_STORAGE_KEY);
+
+            if (storedUser) {
+                usernameElement.textContent = storedUser;
+            } else {
+                usernameElement.textContent = '旅行者';
+            }
+             avatarElement.style.backgroundImage = '';
+             avatarElement.innerHTML = '<i class="fas fa-user"></i>';
+
+        }
+
+
+        function loadEditProfile() {
+             const storedUser = localStorage.getItem(AUTH_USER_STORAGE_KEY);
+             document.getElementById('edit-username-input').value = storedUser || '旅行者';
+             const editAvatarContainer = document.getElementById('edit-profile-avatar-container');
+             editAvatarContainer.style.backgroundImage = '';
+             editAvatarContainer.innerHTML = '<i class="fas fa-user"></i><input type="file" id="avatar-upload" accept="image/*">';
+             document.getElementById('avatar-upload').addEventListener('change', handleAvatarUpload);
+             showToast('头像编辑功能暂未开放');
+        }
+
+        function handleAvatarUpload(event) {
+             const file = event.target.files[0];
+             if (file) {
+                showToast('头像上传功能暂未开放');
+                event.target.value = null;
+             }
+        }
+
+
+        function saveProfile() {
+             const newUsername = document.getElementById('edit-username-input').value.trim();
+             const storedToken = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+
+             if (!storedToken) {
+                 showToast('请先登录');
+                 showAuthModal();
+                 return;
+             }
+
+             if (!newUsername) {
+                 showToast('用户名不能为空');
+                 return;
+             }
+
+             localStorage.setItem(AUTH_USER_STORAGE_KEY, newUsername);
+             updateProfileUI();
+             showToast('个人信息保存成功 (本地更新)');
+             switchPage('profile-page');
+
+        }
+
+        function showLogoutModal() {
+             const storedToken = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+             if (storedToken) {
+                 document.getElementById('logout-modal').classList.add('visible');
+             } else {
+                 showToast('您还没有登录');
+             }
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('logout-modal').classList.remove('visible');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            updateProfileUI();
+            switchPage('home-page');
+            showAnnouncementModal();
+             history.pushState(null, null, window.location.href);
+
+             const storedToken = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+             const hideAuth = localStorage.getItem(HIDE_AUTH_STORAGE_KEY) === 'true';
+
+             if (!storedToken && !hideAuth) {
+                 showAuthModal();
+             } else if (storedToken) {
+                 showLoggedInUser(localStorage.getItem(AUTH_USER_STORAGE_KEY));
+             } else if (!storedToken && hideAuth) {
+                  // User chose to hide and is not logged in, don't show modal
+                  console.log('Auth modal hidden by user preference.');
+             }
+
+
+        });
+
+         window.addEventListener('popstate', function(event) {
+            if (historyStack.length > 1) {
+                const previousPageId = historyStack[historyStack.length - 2];
+                switchPage(previousPageId, true);
+            } else {
+                 history.pushState(null, null, window.location.href);
+            }
+        });
+
+    </script>
+</body>
+</html>
